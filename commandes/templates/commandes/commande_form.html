@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Passer une Commande - RestoCafe{% endblock %}
+
+{% block content %}
+    <div style="max-width: 700px; margin: 30px auto; background: #ffffff; border: 1px solid #e1e8ed; border-radius: 10px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.04);">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="color: #2c3e50; margin: 0; font-size: 24px;">🛒 Nouvelle Commande</h2>
+            <span style="font-size: 13px; background: #e8f8f5; color: #27ae60; padding: 5px 12px; border-radius: 20px; font-weight: bold;">
+                Connecté : {{ request.user.username }}
+            </span>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Choix de la table (filtrée automatiquement selon le rôle dans la vue) -->
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold; color: #34495e; margin-bottom: 8px;">Sélectionnez la Table :</label>
+                {% if tables %}
+                    <select name="table" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px;">
+                        <option value="">-- Choisir une table --</option>
+                        {% for t in tables %}
+                            <option value="{{ t.pk }}">
+                                Table numéro {{ t.numero }} {% if t.serveur %}(Serveur : {{ t.serveur.username }}){% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                {% else %}
+                    <div style="padding: 12px; background: #fadbd8; color: #c0392b; border-radius: 6px; font-size: 14px;">
+                        ⚠️ Aucune table disponible ou aucune table ne vous est assignée.
+                    </div>
+                {% endif %}
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;">
+
+            <!-- Choix des plats et quantités -->
+            <h3 style="color: #2c3e50; font-size: 18px; margin-bottom: 15px;">Sélectionnez les plats (Indiquez la quantité) :</h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; padding-right: 5px;">
+                {% for p in plats %}
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8f9fa; border-radius: 6px; border: 1px solid #e9ecef;">
+                        <div>
+                            <strong>{{ p.nom }}</strong> 
+                            <span style="color: #27ae60; font-weight: bold; margin-left: 10px;">{{ p.prix }} TND</span>
+                            <br><small style="color: #7f8c8d;">{{ p.categorie.nom }}</small>
+                        </div>
+                        <div>
+                            <input type="number" name="plat_{{ p.pk }}" value="0" min="0" style="width: 70px; padding: 6px; text-align: center; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+                    </div>
+                {% empty %}
+                    <p style="color: #7f8c8d; text-align: center;">Aucun plat disponible pour le moment.</p>
+                {% endfor %}
+            </div>
+
+            <!-- Boutons d'action -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+                {% if tables %}
+                    <button type="submit" style="padding: 12px 25px; background: #27ae60; color: white; border: none; border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer;">
+                        Valider la commande
+                    </button>
+                {% endif %}
+                
+                <a href="{% url 'commandes:commande_list' %}" style="color: #7f8c8d; text-decoration: none; font-size: 14px; font-weight: 500;">
+                    Retour aux commandes
+                </a>
+            </div>
+        </form>
+
+    </div>
+{% endblock %}

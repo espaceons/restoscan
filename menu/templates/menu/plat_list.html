@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestion du Menu - RestoCafe{% endblock %}
+
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+        <h2>🍔 Gestion du Menu (Plats & Boissons)</h2>
+        <div>
+            <a href="{% url 'menu:categorie_list' %}" style="padding: 10px 18px; background: #34495e; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; margin-right: 10px; font-size: 14px;">📁 Gérer les Catégories</a>
+            <a href="{% url 'menu:plat_add' %}" style="padding: 10px 18px; background: #27ae60; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px;">+ Ajouter un plat</a>
+        </div>
+    </div>
+    
+    <!-- Grille de cartes pour les plats -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+        {% for p in plats %}
+            <div style="background: #ffffff; border: 1px solid #e1e8ed; border-radius: 10px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.04); position: relative; display: flex; flex-direction: column;">
+                
+                <!-- Affichage de l'image du plat avec effet de Zoom au survol -->
+                {% if p.image %}
+                    <div style="width: 100%; height: 160px; overflow: hidden; border-radius: 6px; margin-bottom: 15px; background: #f8f9fa;">
+                        <img src="{{ p.image.url }}" alt="{{ p.nom }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                    </div>
+                {% endif %}
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3 style="margin: 0; color: #2c3e50; font-size: 18px;">{{ p.nom }}</h3>
+                    {% if p.disponible_du_jour %}
+                        <span style="background: #e8f8f5; color: #27ae60; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">Disponible</span>
+                    {% else %}
+                        <span style="background: #fadbd8; color: #c0392b; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">Épuisé</span>
+                    {% endif %}
+                </div>
+
+                <p style="color: #2980b9; font-size: 14px; font-weight: bold; margin: 5px 0;">
+                    {{ p.categorie.nom }}
+                </p>
+
+                <p style="color: #7f8c8d; font-size: 14px; margin: 10px 0;">
+                    {{ p.description|default:"Aucune description." }}
+                </p>
+
+                <p style="color: #27ae60; font-size: 16px; font-weight: bold; margin: 10px 0;">
+                    {{ p.prix }} TND
+                </p>
+
+                <hr style="border: 0; border-top: 1px solid #f1f1f1; margin: 15px 0;">
+
+                <!-- Actions du plat : Modifier, Supprimer -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <a href="{% url 'menu:plat_edit' p.pk %}" style="color: #2980b9; text-decoration: none; font-weight: 500; font-size: 14px;">Modifier</a>
+                    <a href="{% url 'menu:plat_delete' p.pk %}" style="color: #c0392b; text-decoration: none; font-weight: 500; font-size: 14px;">Supprimer</a>
+                </div>
+
+                <!-- Bouton de bascule de disponibilité -->
+                <div style="text-align: center; margin-top: auto;">
+                    <a href="{% url 'menu:plat_toggle' p.pk %}" style="display: block; width: 100%; padding: 8px 12px; background: {% if p.disponible_du_jour %}#fadbd8{% else %}#e8f8f5{% endif %}; color: {% if p.disponible_du_jour %}#c0392b{% else %}#27ae60{% endif %}; text-decoration: none; border-radius: 4px; font-size: 12px; font-weight: bold; box-sizing: border-box;">
+                        {% if p.disponible_du_jour %}Marquer Indisponible{% else %}Marquer Disponible{% endif %}
+                    </a>
+                </div>
+
+            </div>
+        {% empty %}
+            <p style="grid-column: 1 / -1; text-align: center; color: #7f8c8d; padding: 40px;">Aucun plat dans le menu pour le moment.</p>
+        {% endfor %}
+    </div>
+
+    <div style="margin-top: 30px;">
+        <a href="{% url 'accounts:admin_dashboard' %}" style="color: #7f8c8d; text-decoration: none; font-size: 14px;">← Retour au tableau de bord admin</a>
+    </div>
+{% endblock %}

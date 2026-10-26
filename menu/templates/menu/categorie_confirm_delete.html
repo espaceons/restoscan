@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Supprimer la Catégorie - RestoCafe{% endblock %}
+
+{% block content %}
+    <div style="max-width: 500px; margin: 50px auto; background: #ffffff; border: 1px solid #e1e8ed; border-radius: 10px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.04); text-align: center;">
+        
+        <div style="font-size: 40px; margin-bottom: 15px;">⚠️</div>
+        <h2 style="color: #c0392b; margin-top: 0; font-size: 22px;">Confirmer la suppression</h2>
+        
+        <p style="color: #555; font-size: 15px; line-height: 1.6; margin-bottom: 25px;">
+            Êtes-vous sûr de vouloir supprimer la catégorie <strong>"{{ object.nom }}"</strong> ? <br>
+            <span style="color: #e74c3c; font-size: 13px;">Attention : Cela supprimera ou détachera les éléments liés.</span>
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button type="submit" style="padding: 10px 20px; background: #c0392b; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                    Oui, supprimer
+                </button>
+                <a href="{% url 'menu:categorie_list' %}" style="padding: 10px 20px; background: #95a5a6; color: white; text-decoration: none; border-radius: 6px; font-weight: 600;">
+                    Annuler
+                </a>
+            </div>
+        </form>
+
+    </div>
+{% endblock %}

@@ -22,9 +22,12 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     # Inclusion des URLs de vos applications
-    path('api/menu/', include('menu.urls')),
-    path('api/tables/', include('tables.urls')),
-    path('api/accounts/', include('accounts.urls')),
+    # path('api/menu/', include('menu.urls')),
+    # path('api/tables/', include('tables.urls')),
+    path('', include('accounts.urls')),
+    path('menu/', include('menu.urls')),
+    path('tables/', include('tables.urls')),
+    path('commandes/', include('commandes.urls')),
 ]
 
 # Permet de charger les images des plats en local pendant le développement

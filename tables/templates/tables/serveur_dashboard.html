@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Mon Espace Serveur - RestoCafe{% endblock %}
+
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+        <div>
+            <h2>👨‍🍳 Espace Serveur : Mes Tables Assignées</h2>
+            <p style="color: #666; margin: 5px 0 0 0;">Bonjour <strong>{{ user.username }}</strong>, voici vos tables et leurs commandes en temps réel.</p>
+        </div>
+        <div>
+            <a href="{% url 'commandes:commande_add' %}" style="padding: 10px 18px; background: #27ae60; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px;">+ Nouvelle Commande</a>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+        {% for t in tables %}
+            <div style="background: #fdfefe; border: 2px solid {% if t.commandes.all %}#e67e22{% else %}#3498db{% endif %}; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                
+                <!-- En-tête de la table -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3 style="margin: 0; color: #2c3e50; font-size: 22px;">Table {{ t.numero }}</h3>
+                    {% if t.commandes.all %}
+                        <span style="background: #fef5e7; color: #d68910; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold;">⚠️ Commande en cours</span>
+                    {% else %}
+                        <span style="background: #e8f8f5; color: #27ae60; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold;">Libre</span>
+                    {% endif %}
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+
+                <!-- Liste des commandes associées à cette table -->
+                <div style="flex-grow: 1; margin-bottom: 15px;">
+                    {% for cmd in t.commandes.all %}
+                        {% if cmd.statut != 'servie' and cmd.statut != 'annulee' %}
+                            <div style="background: #f8f9fa; border: 1px solid #e1e8ed; border-radius: 6px; padding: 10px; margin-bottom: 8px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px;">
+                                    <strong>Cmd #{{ cmd.pk }}</strong>
+                                    <span style="color: #2980b9; font-weight: bold;">{{ cmd.get_statut_display }}</span>
+                                </div>
+                                <ul style="margin: 0; padding-left: 15px; font-size: 13px; color: #555;">
+                                    {% for ligne in cmd.lignes.all %}
+                                        <li>{{ ligne.quantite }}x {{ ligne.plat.nom }}</li>
+                                    {% endfor %}
+                                </ul>
+
+                                <!-- Boutons rapides pour avancer le statut -->
+                                <div style="margin-top: 8px; display: flex; gap: 5px;">
+                                    {% if cmd.statut == 'en_attente' %}
+                                        <a href="{% url 'commandes:update_status' cmd.pk 'en_preparation' %}" style="flex: 1; padding: 4px; background: #2980b9; color: white; text-align: center; text-decoration: none; border-radius: 4px; font-size: 11px; font-weight: bold;">Préparer</a>
+                                    {% elif cmd.statut == 'en_preparation' %}
+                                        <a href="{% url 'commandes:update_status' cmd.pk 'prete' %}" style="flex: 1; padding: 4px; background: #27ae60; color: white; text-align: center; text-decoration: none; border-radius: 4px; font-size: 11px; font-weight: bold;">Prête</a>
+                                    {% elif cmd.statut == 'prete' %}
+                                        <a href="{% url 'commandes:update_status' cmd.pk 'servie' %}" style="flex: 1; padding: 4px; background: #7f8c8d; color: white; text-align: center; text-decoration: none; border-radius: 4px; font-size: 11px; font-weight: bold;">Servir</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% empty %}
+                        <p style="font-size: 13px; color: #7f8c8d; text-align: center; margin: 15px 0;">Aucune commande active pour cette table.</p>
+                    {% endfor %}
+                </div>
+
+                <!-- Bouton d'action rapide sur la table -->
+                <div style="margin-top: auto; text-align: center;">
+                    <a href="{% url 'commandes:commande_add' %}" style="display: block; width: 100%; padding: 8px; background: #34495e; color: white; text-decoration: none; border-radius: 4px; font-size: 12px; font-weight: bold; box-sizing: border-box;">
+                        + Ajouter commande à cette table
+                    </a>
+                </div>
+
+            </div>
+        {% empty %}
+            <p style="grid-column: 1 / -1; text-align: center; color: #7f8c8d; padding: 40px;">Aucune table ne vous est assignée pour le moment.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard Administrateur - RestoCafe{% endblock %}
+
+{% block content %}
+    <div style="margin-bottom: 30px;">
+        <h2>👑 Tableau de bord Administrateur</h2>
+        <p style="color: #666;">Bienvenue <strong>{{ user.username }}</strong>. Gérez l'ensemble de votre restocafé à partir des sections ci-dessous :</p>
+    </div>
+
+    <!-- Grille des grands modules de gestion -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        
+        <!-- Carte 1 : Gestion des Utilisateurs -->
+        <div style="background: #ffffff; border: 1px solid #e1e8ed; border-radius: 10px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.04);">
+            <div style="font-size: 32px; margin-bottom: 10px;">👥</div>
+            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Gestion des Utilisateurs</h3>
+            <p style="color: #7f8c8d; font-size: 14px; line-height: 1.5;">
+                Ajoutez des serveurs ou cuisiniers, activez ou désactivez leurs comptes et modifiez leurs rôles.
+            </p>
+            <a href="{% url 'accounts:user_list' %}" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background: #2c3e50; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                Gérer les utilisateurs →
+            </a>
+        </div>
+
+        <!-- Carte 2 : Gestion des Tables -->
+        <div style="background: #ffffff; border: 1px solid #e1e8ed; border-radius: 10px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.04);">
+            <div style="font-size: 32px; margin-bottom: 10px;">📋</div>
+            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Gestion des Tables</h3>
+            <p style="color: #7f8c8d; font-size: 14px; line-height: 1.5;">
+                Créez de nouvelles tables, assignez des serveurs spécifiques et gérez les QR codes associés.
+            </p>
+            <a href="{% url 'tables:table_list' %}" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background: #3498db; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                Gérer les tables →
+            </a>
+        </div>
+
+        <!-- Carte 3 : Gestion du Menu (Plats) -->
+        <div style="background: #ffffff; border: 1px solid #e1e8ed; border-radius: 10px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.04);">
+            <div style="font-size: 32px; margin-bottom: 10px;">🍔</div>
+            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Gestion des Plats</h3>
+            <p style="color: #7f8c8d; font-size: 14px; line-height: 1.5;">
+                Gérez la liste de tous vos plats, leurs prix, leurs images et leur disponibilité en temps réel.
+            </p>
+            <a href="{% url 'menu:plat_list' %}" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background: #27ae60; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                Gérer les plats →
+            </a>
+        </div>
+
+        <!-- Carte 4 : Gestion des Catégories -->
+        <div style="background: #ffffff; border: 1px solid #e1e8ed; border-radius: 10px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.04);">
+            <div style="font-size: 32px; margin-bottom: 10px;">📁</div>
+            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Gestion des Catégories</h3>
+            <p style="color: #7f8c8d; font-size: 14px; line-height: 1.5;">
+                Organisez vos produits en catégories (Boissons, Plats principaux, Desserts, etc.).
+            </p>
+            <a href="{% url 'menu:categorie_list' %}" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background: #e67e22; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                Gérer les catégories →
+            </a>
+        </div>
+
+        <!-- Carte 5 : Gestion des Commandes -->
+        <div style="background: #ffffff; border: 1px solid #e1e8ed; border-radius: 10px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.04);">
+            <div style="font-size: 32px; margin-bottom: 10px;">🛒</div>
+            <h3 style="color: #2c3e50; margin-top: 0; font-size: 20px;">Gestion des Commandes</h3>
+            <p style="color: #7f8c8d; font-size: 14px; line-height: 1.5;">
+                Suivez toutes les commandes en cours, vérifiez leur statut (en attente, en cuisine, servies) et l'historique.
+            </p>
+            <!-- Remplacez 'commandes:commande_list' par le nom d'URL exact de votre application commandes si nécessaire -->
+            <a href="{% url 'commandes:commande_list' %}" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background: #8e44ad; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px;">
+                Gérer les commandes →
+            </a>
+        </div>
+
+    </div>
+{% endblock %}
