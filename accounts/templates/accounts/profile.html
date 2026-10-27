@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Mon Profil - RestoCafe{% endblock %}
+
+{% block content %}
+    <div style="max-width: 600px; margin: 30px auto; background: #ffffff; border: 1px solid #e1e8ed; border-radius: 10px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.04);">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="color: #2c3e50; margin: 0; font-size: 24px;">👤 Mon Profil</h2>
+            <a href="{% url 'accounts:profile_edit' %}" style="padding: 8px 16px; background: #2980b9; color: white; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: bold;">
+                Modifier le profil
+            </a>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div style="padding: 12px; background: #e8f8f5; color: #27ae60; border-radius: 6px; margin-bottom: 20px; font-size: 14px; font-weight: bold; border: 1px solid #a3e4d7;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div style="display: flex; align-items: center; gap: 20px; background: #f8f9fa; border-radius: 8px; padding: 20px; border: 1px solid #e9ecef; margin-bottom: 25px;">
+            <!-- Affichage de la photo de profil -->
+            <div>
+                {% if user.photo %}
+                    <img src="{{ user.photo.url }}" alt="Photo de profil" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 2px solid #3498db;">
+                {% else %}
+                    <div style="width: 90px; height: 90px; border-radius: 50%; background: #bdc3c7; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 28px;">
+                        {{ user.username|slice:":1"|upper }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div style="flex-grow: 1;">
+                <p style="margin: 6px 0; font-size: 15px;"><strong>Nom :</strong> {{ user.username }}</p>
+                <p style="margin: 6px 0; font-size: 15px;"><strong>Email :</strong> {{ user.email|default:"Non renseignée" }}</p>
+                <p style="margin: 6px 0; font-size: 15px;"><strong>Téléphone :</strong> {{ user.tel|default:"Non renseigné" }}</p>
+                <p style="margin: 6px 0; font-size: 15px;"><strong>Rôle :</strong> <span style="background: #34495e; color: #fff; padding: 3px 8px; border-radius: 10px; font-size: 12px; font-weight: bold;">{{ user.get_role_display }}</span></p>
+            </div>
+        </div>
+
+        <div>
+            <a href="{% url 'accounts:home' %}" style="color: #7f8c8d; text-decoration: none; font-size: 14px; font-weight: 500;">
+                ← Retour à l'accueil
+            </a>
+        </div>
+    </div>
+{% endblock %}

@@ -4,36 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}RestoCafe{% endblock %}</title>
-    <!-- Vous pourrez ajouter ici un lien vers Bootstrap ou votre CSS personnalisé -->
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f9f9f9; }
-        nav { background: #333; color: #fff; padding: 10px; margin-bottom: 20px; }
-        nav a { color: #fff; text-decoration: none; margin-right: 15px; }
-        nav a:hover { text-decoration: underline; }
-        .container { background: #fff; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background-color: #f9f9f9; 
+            color: #333;
+        }
+        .container { 
+            background: #fff; 
+            padding: 25px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+            max-width: 1200px;
+            margin: 0 auto;
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-    <!-- Barre de navigation commune -->
-    <nav>
-        <strong>RestoCafe Admin</strong> |
-        {% if user.is_authenticated %}
-            <a href="{% url 'accounts:user_list' %}">Utilisateurs</a>
-            <!-- Vous ajouterez les liens tables et menu ici plus tard -->
-            <a href="{% url 'accounts:logout' %}">Se déconnecter ({{ user.username }})</a>
-        {% else %}
-            <a href="{% url 'accounts:login' %}">Connexion</a>
-        {% endif %}
-    </nav>
+    <!-- Barre de navigation dynamique et intelligente -->
+    {% include 'navbar.html' %}
 
-    <!-- Contenu dynamique -->
+    <!-- Contenu dynamique des différentes vues -->
     <div class="container">
         {% block content %}
-        <!-- Le contenu des autres pages viendra s'insérer ici -->
+        <!-- Le contenu des autres pages s'insère ici -->
         {% endblock %}
     </div>
 
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

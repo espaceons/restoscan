@@ -28,6 +28,7 @@ urlpatterns = [
     path('menu/', include('menu.urls')),
     path('tables/', include('tables.urls')),
     path('commandes/', include('commandes.urls')),
+    path('stats/', include('stats.urls')),
 ]
 
 # Permet de charger les images des plats en local pendant le développement

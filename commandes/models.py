@@ -7,11 +7,12 @@ from tables.models import Table
 
 class Commande(models.Model):
     STATUT_CHOICES = (
-        ('en_attente', 'En attente'),
-        ('en_preparation', 'En préparation'),
+        ('en_attente', 'En attente (Confirmée par serveur)'),
+        ('en_preparation', 'En préparation (Cuisine)'),
         ('prete', 'Prête à servir'),
-        ('servie', 'Servie'),
+        ('servie', 'Servie à la table'),
         ('annulee', 'Annulée'),
+        ('payee', 'Payée & Clôturée'),
     )
 
     table = models.ForeignKey(

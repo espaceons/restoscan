@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     'rest_framework',
     'rest_framework_simplejwt',
     # Vos applications
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'tables',
     'menu',
     'commandes',
+    'stats',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +70,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 👈 Ajoutez votre context processor ici :
+                'accounts.context_processors.restaurant_stats',
             ],
         },
     },

@@ -30,25 +30,25 @@
                     {% endfor %}
                 </ul>
 
-                <!-- Gestion des actions selon l'état de validation du serveur -->
+                <!-- Gestion des actions du cuisinier -->
                 <div style="margin-top: 20px;">
                     {% if cmd.statut == 'en_attente' %}
-                        <!-- Message informatif lorsque le serveur n'a pas encore validé -->
-                        <div style="padding: 10px; background: #fdf2e9; color: #d35400; border: 1px dashed #f39c12; border-radius: 6px; text-align: center; font-size: 13px; font-weight: 500;">
-                            ⏳ En attente de validation par le serveur
-                        </div>
-                    {% elif cmd.statut == 'en_preparation' %}
-                        <!-- Bouton disponible une fois validé en préparation -->
-                        <div style="display: flex; gap: 10px;">
-                            <a href="{% url 'commandes:update_status' cmd.pk 'prete' %}" style="flex: 1; text-align: center; padding: 8px; background: #27ae60; color: white; text-decoration: none; border-radius: 4px; font-size: 13px; font-weight: bold;">
-                                Marquer comme Prête
-                            </a>
-                        </div>
+                        <!-- Si en attente : Bouton pour lancer la préparation -->
+                        <a href="{% url 'commandes:update_status' cmd.pk 'en_preparation' %}" style="display: block; text-align: center; padding: 9px; background: #d68910; color: white; text-decoration: none; border-radius: 4px; font-size: 13px; font-weight: bold;">
+                            🍳 Commencer la préparation
+                        </a>
+                    {% else %}
+                        <!-- Dès qu'elle est en préparation (ou autre), on affiche le bouton pour la marquer prête -->
+                        <a href="{% url 'commandes:update_status' cmd.pk 'prete' %}" style="display: block; text-align: center; padding: 9px; background: #27ae60; color: white; text-decoration: none; border-radius: 4px; font-size: 13px; font-weight: bold;">
+                            ✅ Marquer comme Prête
+                        </a>
                     {% endif %}
                 </div>
             </div>
         {% empty %}
-            <p style="grid-column: 1 / -1; text-align: center; color: #7f8c8d; padding: 40px;">Aucune commande en attente pour le moment. Bon travail ! ☕</p>
+            <p style="grid-column: 1 / -1; text-align: center; color: #7f8c8d; padding: 40px; background: #fff; border-radius: 8px; border: 1px solid #e1e8ed;">
+                Aucune commande en attente pour le moment. Bon travail ! ☕
+            </p>
         {% endfor %}
     </div>
 {% endblock %}

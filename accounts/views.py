@@ -1,8 +1,8 @@
 # accounts/views.py
 
-from django.shortcuts import get_object_or_404, redirect
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
-from django.shortcuts import render
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, UpdateView
@@ -11,6 +11,42 @@ from .models import User
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 
+
+# accounts/views.py
+
+# profile
+
+
+@login_required
+def profile_view(request):
+  """Affiche simplement le profil de l'utilisateur connecté."""
+  return render(request, 'accounts/profile.html')
+
+
+# accounts/views.py
+@login_required
+def profile_edit_view(request):
+  if request.method == 'POST':
+    username = request.POST.get('username')
+    email = request.POST.get('email')
+    tel = request.POST.get('tel')
+    photo = request.FILES.get('photo')  # 👈 Récupération du fichier image
+
+    user = request.user
+    if username:
+      user.username = username
+    if email is not None:
+      user.email = email
+    if tel is not None:
+      user.tel = tel
+    if photo:
+      user.photo = photo  # 👈 Sauvegarde de la nouvelle photo
+
+    user.save()
+    messages.success(request, 'Votre profil a été mis à jour avec succès !')
+    return redirect('accounts:profile')
+
+  return render(request, 'accounts/profile_edit.html')
 
 # Vue pour la page d'accueil globale
 def home_view(request):
@@ -27,20 +63,18 @@ def home_view(request):
 #     return reverse_lazy('accounts:user_list')
 
 class CustomLoginView(LoginView):
-  template_name = 'accounts/login.html'
-  redirect_authenticated_user = True
+    template_name = 'accounts/login.html'
+    redirect_authenticated_user = True
 
-  def get_success_url(self):
-    user = self.request.user
-    if user.role == 'admin':
-      return reverse(
-          'accounts:admin_dashboard'
-      )  # <-- Redirige vers le dashboard admin global
-    elif user.role == 'serveur':
-      return reverse('tables:serveur_dashboard')
-    elif user.role == 'cuisine':
-      return reverse('commandes:cuisine_dashboard')
-    return reverse('accounts:home')
+    def get_success_url(self):
+        user = self.request.user
+        if user.role == 'admin':
+            return reverse('accounts:admin_dashboard')
+        elif user.role == 'serveur':
+            return reverse('tables:serveur_dashboard')
+        elif user.role == 'cuisine':
+            return reverse('commandes:cuisine_dashboard')
+        return reverse('accounts:home')
 
 # Déconnexion
 # class CustomLogoutView(LogoutView):
@@ -77,12 +111,25 @@ class UserListView(ListView):
   context_object_name = 'users'
 
 
+# accounts/views.py
+
+User = get_user_model()
+
+
 @login_required
 def admin_dashboard(request):
-  # Vérifier que l'utilisateur est bien admin
-  if request.user.role != 'admin':
+  # Vérifier que l'utilisateur est admin ou superuser
+  if not request.user.is_superuser and getattr(request.user, 'role', '') != 'admin':
     return redirect('accounts:home')
-  return render(request, 'accounts/admin_dashboard.html')
+
+  # Récupérer tous les utilisateurs pour les afficher dans le dashboard
+  users = User.objects.all().order_by('username')
+
+  context = {
+      'users': users,
+  }
+
+  return render(request, 'accounts/admin_dashboard.html', context)
 
 
 # Modification d'un utilisateur (Changer rôle, Activer/Désactiver)

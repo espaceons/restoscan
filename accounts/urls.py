@@ -8,12 +8,16 @@ from .views import (
     RegisterView,
     UserListView,
     UserUpdateView,
+    profile_edit_view,
+    profile_view,
     toggle_user_status,
 )
 
 app_name = 'accounts'
 
 urlpatterns = [
+    path('profile/', profile_view, name='profile'),
+    path('profile/edit/', profile_edit_view, name='profile_edit'),
     path('', home_view, name='home'),  # <-- La page d'accueil globale
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', CustomLogoutView, name='logout'),

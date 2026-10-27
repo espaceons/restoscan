@@ -1,24 +1,61 @@
-<nav style="background: #333; color: #fff; padding: 15px; margin-bottom: 20px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
-    <div>
-        <strong style="font-size: 18px;">RestoCafe</strong> |
-        <a href="{% url 'accounts:home' %}" style="color: #fff; text-decoration: none; margin: 0 10px;">Accueil</a>
+<nav style="background: #333; color: #fff; padding: 15px; margin-bottom: 20px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <strong style="font-size: 18px; color: #f39c12;">☕ RestoCafe</strong> |
+        <a href="{% url 'accounts:home' %}" style="color: #fff; text-decoration: none; margin: 0 5px;">Accueil</a>
+        
         {% if user.is_authenticated %}
-            | <a href="{% url 'accounts:user_list' %}" style="color: #fff; text-decoration: none; margin: 0 10px;">Utilisateurs</a>
+            | 
+            <!-- Liens selon le rôle -->
+            {% if user.role == 'admin' or user.is_superuser %}
+                <a href="{% url 'accounts:admin_dashboard' %}" style="color: #3498db; text-decoration: none; margin: 0 5px; font-weight: bold;">Dashboard Admin</a>
+                <a href="{% url 'accounts:user_list' %}" style="color: #fff; text-decoration: none; margin: 0 5px;">Utilisateurs</a>
+                <a href="{% url 'tables:table_list' %}" style="color: #fff; text-decoration: none; margin: 0 5px;">Tables</a>
+                <a href="{% url 'commandes:commande_list' %}" style="color: #fff; text-decoration: none; margin: 0 5px;">Commandes</a>
+            
+            {% elif user.role == 'serveur' %}
+                <a href="{% url 'tables:serveur_dashboard' %}" style="color: #2ecc71; text-decoration: none; margin: 0 5px; font-weight: bold;">Mes Tables</a>
+                <a href="{% url 'commandes:commande_add' %}" style="color: #fff; text-decoration: none; margin: 0 5px;">Nouvelle Commande</a>
+                <a href="{% url 'commandes:commande_list' %}" style="color: #fff; text-decoration: none; margin: 0 5px;">Historique</a>
+            
+            {% elif user.role == 'cuisine' %}
+                <a href="{% url 'commandes:cuisine_dashboard' %}" style="color: #f39c12; text-decoration: none; margin: 0 5px; font-weight: bold;">Dashboard Cuisine</a>
+            {% endif %}
         {% endif %}
     </div>
 
-    <div>
+    <!-- 📊 Bloc Statistiques en temps réel dans la Navbar -->
+    {% if user.is_authenticated %}
+        <div style="display: flex; align-items: center; gap: 12px; background: #222; padding: 6px 12px; border-radius: 6px; font-size: 13px;">
+            <span style="color: #bdc3c7;" title="Commandes totales">
+                🛒 Commandes: <strong style="color: #3498db;">{{ stat_commandes|default:0 }}</strong>
+            </span>
+            <span style="color: #7f8c8d;">|</span>
+            <span style="color: #bdc3c7;" title="Tables occupées">
+                🪑 Tables occupées: <strong style="color: #e67e22;">{{ stat_tables_occupees|default:0 }}</strong>
+            </span>
+            <span style="color: #7f8c8d;">|</span>
+            <span style="color: #bdc3c7;" title="Serveurs actifs">
+                👨‍🍳 Serveurs actifs: <strong style="color: #2ecc71;">{{ stat_serveurs|default:0 }}</strong>
+            </span>
+        </div>
+    {% endif %}
+
+    <div style="display: flex; align-items: center; gap: 15px;">
         {% if user.is_authenticated %}
-            <span style="color: #4CAF50; margin-right: 15px;">Connecté : <strong>{{ user.username }}</strong> ({{ user.get_role_display }})</span>
+            <a href="{% url 'accounts:profile' %}" style="color: #bdc3c7; text-decoration: none; font-size: 14px;">Mon Profil</a>
             
-            <!-- Formulaire POST obligatoire pour la déconnexion dans Django -->
-            <form action="{% url 'accounts:logout' %}" method="post" style="display: inline;">
+            <span style="color: #2ecc71; font-size: 14px;">
+                <strong>{{ user.username }}</strong> 
+                <span style="background: #444; color: #fff; padding: 3px 8px; border-radius: 10px; font-size: 11px; margin-left: 5px;">{{ user.get_role_display|default:user.role }}</span>
+            </span>
+            
+            <form action="{% url 'accounts:logout' %}" method="post" style="display: inline; margin: 0;">
                 {% csrf_token %}
-                <button type="submit" style="background: #c0392b; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Se déconnecter</button>
+                <button type="submit" style="background: #c0392b; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: bold;">Se déconnecter</button>
             </form>
         {% else %}
-            <span style="color: #e74c3c; margin-right: 15px;">Pas d'accès (Non connecté)</span>
-            <a href="{% url 'accounts:login' %}" style="color: #fff; text-decoration: none; padding: 5px 10px; background: #2980b9; border-radius: 4px;">Connexion</a>
+            <span style="color: #e74c3c; font-size: 14px;">Non connecté</span>
+            <a href="{% url 'accounts:login' %}" style="color: #fff; text-decoration: none; padding: 6px 12px; background: #2980b9; border-radius: 4px; font-size: 13px; font-weight: bold;">Connexion</a>
         {% endif %}
     </div>
 </nav>
